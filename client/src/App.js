@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Web3 from 'web3';
-import consensus from './consensus.json';  // ABI file, not set up yet, would do that after finishing the smart contract
+import consensus from '.artifacts/contracts/consensus.sol/Consensus.json';  // from running npx hardhat compile
 
 const App = () => {
   const [account, setAccount] = useState('');
@@ -40,6 +40,12 @@ const App = () => {
     await contract.methods.vote(voteYes).send({ from: account });
     loadBlockchainData(); // Update vote counts after transaction
   };
+  // define abstain function
+  const abstain = async () => {
+    // Add logic to handle abstainers that want to sit the proposal round out
+    await contract.methods.voteNull().send({ from: account }); // Assuming you have a method for abstaining in your smart contract
+    loadBlockchainData();
+  };
 
   return (
     <div>
@@ -48,9 +54,11 @@ const App = () => {
       <p><strong>Your Account:</strong> {account}</p>
       <button onClick={() => vote(true)}>Vote Yes</button>
       <button onClick={() => vote(false)}>Vote No</button>
-      <button onClick={() => vote(false)}>I want to sit this one out</button> // how do we implement this? with vote(false) or with a new function?
+      <button onClick={abstain}>Abstain</button>
+
       <h2>Results:</h2>
       <p>Yes Votes: {yesVotes}</p>
+      <p>No Votes: {noVotes}</p>
       <p>No Votes: {noVotes}</p>
     </div>
   );
