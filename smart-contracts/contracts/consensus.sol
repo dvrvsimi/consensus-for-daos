@@ -20,11 +20,16 @@ contract Consensus {
 
         if (_voteYes) {
             voteYes++;
-        } else if (!_voteYes) {
-            voteNo++;
         } else {
-            voteNull++; // new condition to account for governing members that don't want to take part in that proposal round
+            voteNo++;
         }
+    }
+
+    // Function for participants who wish to abstain from voting
+    function voteNullify() public {
+        require(!hasVoted[msg.sender], "You have already voted.");
+        hasVoted[msg.sender] = true;
+        voteNull++; // we actuaally need to know the number of abstainers, changing it in app.js too
     }
 
     function getResults() public view returns (uint _voteYes, uint _voteNo) {
