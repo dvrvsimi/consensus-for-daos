@@ -77,17 +77,24 @@ const App = () => {
 
   return (
     <div>
-      <h1>Voting DApp</h1>
-      <p><strong>Proposal:</strong> {proposal}</p>
-      <p><strong>Your Account:</strong> {account}</p>
-      <button onClick={() => vote(true)}>Vote Yes</button>
-      <button onClick={() => vote(false)}>Vote No</button>
-      <button onClick={abstain}>Abstain</button>
+      <h1>X DAO Voting Platform</h1>
 
-      <h2>Results:</h2>
-      <p>Yes Votes: {yesVotes}</p>
-      <p>No Votes: {noVotes}</p>
-      <p>No Votes: {noVotes}</p>
+      {loading ? <p>Loading...</p> : (
+        <>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+
+          <p><strong>Proposal:</strong> {proposal}</p>
+          <p><strong>Your Account:</strong> {account}</p>
+
+          <button onClick={() => vote(true)} disabled={loading}>Agree</button>
+          <button onClick={() => vote(false)} disabled={loading}>Disagree</button>
+          <button onClick={abstain} disabled={loading}>Indifferent</button>
+
+          <h2>Results:</h2>
+          <p>Yes Votes: {yesVotes}</p>
+          <p>No Votes: {noVotes}</p> // no need to display abstain votes
+        </>
+      )}
     </div>
   );
 };
