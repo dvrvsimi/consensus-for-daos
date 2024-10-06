@@ -6,8 +6,9 @@ pragma solidity ^0.8.0;
 contract Consensus {
     string public proposal; // The proposal that is being voted on, has to be a polar question.
     mapping(address => bool) public hasVoted;
-    uint public yesVotes;
-    uint public noVotes;
+    uint public voteYes;
+    uint public voteNo;
+    uint public voteNull;
 
     constructor(string memory _proposal) {
         proposal = _proposal;
@@ -18,13 +19,15 @@ contract Consensus {
         hasVoted[msg.sender] = true;
 
         if (_voteYes) {
-            yesVotes++;
+            voteYes++;
+        } else if (!_voteYes) {
+            voteNo++;
         } else {
-            noVotes++;
+            voteNull++; // new condition to account for governing members that don't want to take part in that proposal round
         }
     }
 
-    function getResults() public view returns (uint _yesVotes, uint _noVotes) {
-        return (yesVotes, noVotes);
+    function getResults() public view returns (uint _voteYes, uint _voteNo) {
+        return (voteYes, voteNo);
     }
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Web3 from 'web3';
-import VotingContract from './VotingContract.json';  // ABI file, not set up yet, would do that after finishing the smart contract
+import consensus from './consensus.json';  // ABI file, not set up yet, would do that after finishing the smart contract
 
 const App = () => {
   const [account, setAccount] = useState('');
@@ -16,10 +16,10 @@ const App = () => {
   const loadBlockchainData = async () => {
     const web3 = new Web3(Web3.givenProvider || 'http://localhost:7545');
     const networkId = await web3.eth.net.getId();
-    const networkData = VotingContract.networks[networkId];
+    const networkData = consensus.networks[networkId];
 
     if (networkData) {
-      const contract = new web3.eth.Contract(VotingContract.abi, networkData.address);
+      const contract = new web3.eth.Contract(consensus.abi, networkData.address);
       setContract(contract);
 
       const accounts = await web3.eth.getAccounts();
@@ -48,6 +48,7 @@ const App = () => {
       <p><strong>Your Account:</strong> {account}</p>
       <button onClick={() => vote(true)}>Vote Yes</button>
       <button onClick={() => vote(false)}>Vote No</button>
+      <button onClick={() => vote(false)}>I want to sit this one out</button> // how do we implement this? with vote(false) or with a new function?
       <h2>Results:</h2>
       <p>Yes Votes: {yesVotes}</p>
       <p>No Votes: {noVotes}</p>
