@@ -1,0 +1,80 @@
+.landingContainer {
+  position: relative;
+  background-image: url("../../assets/bgImg.jpg");
+  height: 100vh;
+  width: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: space-between; */
+}
+
+.navLanding {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  /* border: 2px solid red; */
+}
+
+.logoLanding {
+  font-size: 40px;
+  /* border: 2px solid red; */
+  font-weight: 900;
+  letter-spacing: 8px;
+}
+
+.landingContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the color and transparency */
+  z-index: 1; /* Ensures the overlay sits above the background image */
+}
+
+.navLanding,
+h1,
+h3 {
+  position: relative; /* Ensure these elements appear above the overlay */
+  z-index: 2; /* Higher z-index than the overlay */
+}
+
+.midSection {
+  text-align: center;
+}
+
+.midH1 {
+  letter-spacing: 5px;
+  font-size: 80px;
+  font-weight: 500;
+}
+
+.midH3 {
+  font-size: 20px;
+}
+
+.bottomLanding {
+  /* border: 2px solid red; */
+  width: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-bottom: 20px;
+  font-size: 20px;
+  position: absolute;
+  bottom: 0;
+}
+
+.cIcon {
+  margin-right: 5px;
+}
