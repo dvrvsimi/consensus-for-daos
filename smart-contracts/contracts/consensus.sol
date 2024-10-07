@@ -6,16 +6,39 @@ pragma solidity ^0.8.0;
 contract Consensus {
     string public proposal; // The proposal that is being voted on, has to be a polar question.
     mapping(address => bool) public hasVoted;
+    mapping(address => bool) public eligibleVoters;
     uint public voteYes;
     uint public voteNo;
     uint public voteNull;
+
+    uint constant MIN_BALANCE = 1 ether; // minimum balance required to vote, can always be changed
 
     constructor(string memory _proposal) {
         proposal = _proposal;
     }
 
-    function vote(bool _voteYes) public {
+
+    modifier onlyEligibleVoters() {
+        require(msg.sender.balance >= 1 ether, "You must have at least 1 ETH to vote.");
         require(!hasVoted[msg.sender], "You have already voted.");
+        _;
+    }
+
+
+    function updateEligibility() public {
+        if (msg.sender.balance >= 1 ether) { // restrict voting to members who have contributed to the do, replace 1 eth with dao token
+            eligibleVoters[msg.sender] = true; 
+        } else {
+            eligibleVoters[msg.sender] = false;
+        }
+    }
+
+
+
+    function vote(bool _voteYes) public onlyEligibleVoters{
+        require(!hasVoted[msg.sender], "You have already voted.");
+        require(eligibleVoters[msg.sender], "You are not allowed to vote.");
+
         hasVoted[msg.sender] = true;
 
         if (_voteYes) {
@@ -32,6 +55,8 @@ contract Consensus {
         voteNull++; // we actuaally need to know the number of abstainers, changing it in app.js too
     }
 
+
+    
     function getResults() public view returns (uint _voteYes, uint _voteNo) {
         return (voteYes, voteNo);
     }
