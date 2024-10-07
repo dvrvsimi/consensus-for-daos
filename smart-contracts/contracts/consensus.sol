@@ -10,6 +10,7 @@ contract Consensus {
     uint public voteYes;
     uint public voteNo;
     uint public voteNull;
+    uint public totalVotes;
 
     uint constant MIN_BALANCE = 1 ether; // minimum balance required to vote, can always be changed
 
@@ -40,6 +41,7 @@ contract Consensus {
         require(eligibleVoters[msg.sender], "You are not allowed to vote.");
 
         hasVoted[msg.sender] = true;
+        totalVotes++;
 
         if (_voteYes) {
             voteYes++;
@@ -48,7 +50,7 @@ contract Consensus {
         }
     }
 
-    // Function for participants who wish to abstain from voting
+    // Function for participants who wish to abstain from voting, there should be a way to integrate this into the if-else statement in vote()
     function voteNullify() public {
         require(!hasVoted[msg.sender], "You have already voted.");
         hasVoted[msg.sender] = true;
