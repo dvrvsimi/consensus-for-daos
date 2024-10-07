@@ -4,18 +4,21 @@ pragma solidity ^0.8.0;
 
 // Consensus is a contract that allows governing members of a DAO to vote on a proposal.
 contract Consensus {
-    string public proposal; // The proposal that is being voted on, has to be a polar question.
+    string public proposal; // the proposal that is being voted on, has to be a polar question.
+    uint public quorum; // the minimum number of votes required to reach a decision
     mapping(address => bool) public hasVoted;
     mapping(address => bool) public eligibleVoters;
     uint public voteYes;
     uint public voteNo;
     uint public voteNull;
     uint public totalVotes;
+    
 
     uint constant MIN_BALANCE = 1 ether; // minimum balance required to vote, can always be changed
 
-    constructor(string memory _proposal) {
+    constructor(string memory _proposal, uint _quorum) {
         proposal = _proposal;
+        quorum = _quorum;
     }
 
 
@@ -61,5 +64,18 @@ contract Consensus {
     
     function getResults() public view returns (uint _voteYes, uint _voteNo) {
         return (voteYes, voteNo);
+    }
+
+    function finalizeVote() public view returns (string memory) {
+        require(voteYes + voteNo + voteNull >= quorum, "Quorum not reached.");
+        if (voteYes > voteNo) {
+            return "Proposal approved.";
+        } else if (voteYes == voteNo) {
+            return "Proposal tied.";
+        } else if (voteNull > voteYes) { // obviously not a good poll if this happens
+            return "Proposal invalid.";
+        } else {
+            return "Proposal rejected.";
+        }
     }
 }
