@@ -1,2 +1,2 @@
 # consensus-for-daos
-a simple ethereum-based voting dApp that allows governing members of a dao to vote on a proposal using a smart contract, integrated with an interactive react-based front end
+a simple, open-source Ethereum-based voting dApp that allows governing members of a dao to vote on a proposal using a smart contract, integrated with an interactive React-based front-end
