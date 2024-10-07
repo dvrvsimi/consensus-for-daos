@@ -10,7 +10,7 @@ const App = () => {
   const [proposal, setProposal] = useState('');
   const [loading, setLoading] = useState(false); // loading state
   const [error, setError] = useState(''); // error state
-
+ 
   useEffect(() => {
     loadBlockchainData();
   }, []);
