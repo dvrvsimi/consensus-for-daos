@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import LandingPage from "./pages/landingPage/LandingPage";
+import ProposalsPage from "./pages/proposalsPage/ProposalsPage";
+import VotePage from "./pages/votePage/VotePage";
+import Web3 from "web3";
+import consensus from "./smartcontracts/Consensus.json";
 
 const App = () => {
   const [account, setAccount] = useState("");
@@ -77,12 +86,84 @@ const App = () => {
     }
   };
 
+  const [redirect, setRedirect] = useState(false);
+  const [redirect2, setRedirect2] = useState(false); //redirect2 ==== redirect to homepage based on logout
+  const [redirect3, setRedirect3] = useState(false);
+
+  // Reset redirect states after they have caused navigation
+  useEffect(() => {
+    if (redirect) {
+      setRedirect(false);
+    }
+    if (redirect2) {
+      setRedirect2(false);
+    }
+    if (redirect3) {
+      setRedirect3(false);
+    }
+  }, [redirect, redirect2, redirect3]);
+
+  const handleClick = () => {
+    setRedirect(true); // Set redirect state to true when button is clicked
+  };
+
+  const handleLogout = () => {
+    setRedirect2(true);
+  };
+
+  const handleVote = () => {
+    setRedirect3(true);
+  };
+
+  const assumedCardTitle = "The Vote Title";
+  const assumedCardDescription = "The description";
+
   return (
     <div>
       <Router>
         {/* Adding Navbar to be visible on all pages */}
         <Routes>
-          <Route path="/" element={<LandingPage onClick={handleClick} />} />
+          <Route
+            exact
+            path="/vote"
+            element={
+              redirect2 ? (
+                <Navigate to="/" /> // Redirect when state is true
+              ) : (
+                <VotePage onClick={handleLogout} />
+              )
+            }
+          />
+
+          <Route
+            exact
+            path="/proposals"
+            element={
+              redirect3 ? (
+                <Navigate to="/vote" /> // Redirect when state is true
+              ) : redirect2 ? (
+                <Navigate to="/" /> // Redirect when state is true
+              ) : (
+                <ProposalsPage
+                  onClick={handleLogout}
+                  onClickVote={handleVote}
+                  assumedCardTitle={assumedCardTitle}
+                  assumedCardDescription={assumedCardDescription}
+                />
+              )
+            }
+          />
+          <Route
+            exact
+            path="/"
+            element={
+              redirect ? (
+                <Navigate to="/proposals" /> // Redirect when state is true
+              ) : (
+                <LandingPage onClick={handleClick} />
+              )
+            }
+          />
         </Routes>
       </Router>
     </div>

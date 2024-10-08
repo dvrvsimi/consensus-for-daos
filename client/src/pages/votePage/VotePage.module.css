@@ -1,0 +1,87 @@
+.voteContainer {
+  position: relative;
+  /* background-image: url("../../assets/bgImg.jpg"); */
+  height: 100vh;
+  width: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  /* display: flex;
+      flex-direction: column;
+      justify-content: space-between; */
+}
+
+.navVote {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  /* border: 2px solid red; */
+}
+
+.logoVote {
+  font-size: 40px;
+  /* border: 2px solid red; */
+  font-weight: 900;
+  letter-spacing: 8px;
+}
+
+.voteContainer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Ensures the overlay sits above the background image */
+}
+
+.navVote,
+h1,
+h3 {
+  position: relative; /* Ensure these elements appear above the overlay */
+  z-index: 2; /* Higher z-index than the overlay */
+}
+
+.midSectionV {
+  text-align: center;
+  position: relative; /* Ensure these elements appear above the overlay */
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.midH1P {
+  letter-spacing: 5px;
+  font-size: 80px;
+  font-weight: 500;
+}
+
+.bottomVote {
+  /* border: 2px solid red; */
+  width: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-bottom: 20px;
+  font-size: 20px;
+  position: absolute;
+  bottom: 0;
+}
+
+.cIcon {
+  margin-right: 5px;
+}
+
+.voteOptions {
+  margin: 0 40px;
+  width: 500px;
+  display: flex;
+  justify-content: space-between;
+}
