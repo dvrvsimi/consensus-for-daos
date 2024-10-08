@@ -13,23 +13,31 @@ This project was initialized using [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
-### `npm start`
+```bash
+npm start
+```
 
 Runs the app in development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will automatically reload if you make changes. Any linting errors will also be displayed in the console.
 
-### `npm test`
+```bash
+npm test
+```
 
 Runs the test suite in watch mode.
 
-### `npm run build`
+```bash
+npm run build
+```
 
 Builds the app for production and outputs to the `build` folder.\
 React is bundled in production mode for optimized performance.
 
-### `npm run eject`
+```bash
+npm run eject
+```
 
 Removes Create React App configuration and dependencies.\
 This is irreversible. You should only use this if you need full control over the project’s configuration.
