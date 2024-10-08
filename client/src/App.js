@@ -8,87 +8,46 @@ import {
 import LandingPage from "./pages/landingPage/LandingPage";
 import ProposalsPage from "./pages/proposalsPage/ProposalsPage";
 import VotePage from "./pages/votePage/VotePage";
-import Web3 from "web3";
-import consensus from "./smartcontracts/Consensus.json";
+import { ethers } from "ethers";
+
+// Import your contract's ABI
+import contractABI from "./utils/ContractABI.json"; // Update this path
+const contractAddress = "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0";
 
 const App = () => {
-  const [account, setAccount] = useState("");
-  const [contract, setContract] = useState(null);
-  const [yesVotes, setYesVotes] = useState(0);
-  const [noVotes, setNoVotes] = useState(0);
-  const [proposal, setProposal] = useState("");
-  const [loading, setLoading] = useState(false); // loading state
-  const [error, setError] = useState(""); // error state
-
-  useEffect(() => {
-    loadBlockchainData();
-  }, []);
-
-  const loadBlockchainData = async () => {
-    try {
-      setLoading(true);
-      const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
-      const networkId = await web3.eth.net.getId();
-      const networkData = consensus.networks[networkId];
-
-      if (networkData) {
-        const contract = new web3.eth.Contract(
-          consensus.abi,
-          networkData.address
-        );
-        setContract(contract);
-
-        const accounts = await web3.eth.getAccounts();
-        setAccount(accounts[0]);
-
-        const proposal = await contract.methods.proposal().call();
-        setProposal(proposal);
-
-        const results = await contract.methods.getResults().call();
-        setYesVotes(results[0]);
-        setNoVotes(results[1]);
-      } else {
-        setError("smart contract not deployed to detected network.");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("failed to load blockchain data.");
-    } finally {
-      setLoading(false); // end loading
-    }
-  };
-
-  const vote = async (voteYes) => {
-    try {
-      setLoading(true);
-      await contract.methods.vote(voteYes).send({ from: account });
-      loadBlockchainData();
-    } catch (err) {
-      console.error(err);
-      setError("voting unsuccessful, please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // define abstain function
-  const abstain = async () => {
-    try {
-      setLoading(true);
-      // Add logic to handle abstainers that want to sit the proposal round out
-      await contract.methods.voteNull().send({ from: account });
-      loadBlockchainData(); // to reload the data after a vote
-    } catch (err) {
-      console.error(err);
-      setError("abstaining unsuccessful, please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const [redirect, setRedirect] = useState(false);
   const [redirect2, setRedirect2] = useState(false); //redirect2 ==== redirect to homepage based on logout
   const [redirect3, setRedirect3] = useState(false);
+
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [contract, setContract] = useState(null);
+  const [proposals, setProposals] = useState(null);
+
+  useEffect(() => {
+    const init = async () => {
+      // Connect to MetaMask
+      if (window.ethereum) {
+        const _provider = new ethers.BrowserProvider(window.ethereum);
+        const _signer = _provider.getSigner();
+        const _contract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          _signer
+        );
+
+        setProvider(_provider);
+        setSigner(_signer);
+        setContract(_contract);
+      } else {
+        alert("Please install MetaMask!");
+      }
+    };
+
+    init();
+  }, []);
+
+  // console.log("cont", contract);
 
   // Reset redirect states after they have caused navigation
   useEffect(() => {
@@ -103,13 +62,48 @@ const App = () => {
     }
   }, [redirect, redirect2, redirect3]);
 
-  const handleClick = () => {
-    setRedirect(true); // Set redirect state to true when button is clicked
+  const handleClick = async () => {
+    // Connect to MetaMask
+    if (window.ethereum) {
+      const _provider = new ethers.BrowserProvider(window.ethereum);
+      const _signer = _provider.getSigner();
+      const _contract = new ethers.Contract(
+        contractAddress,
+        contractABI,
+        _signer
+      );
+
+      setProvider(_provider);
+      setSigner(_signer);
+      setContract(_contract);
+      setRedirect(true);
+      console.log("ee", contract);
+    } else {
+      alert("Please install MetaMask!");
+    }
+    // Set redirect state to true when button is clicked
   };
 
   const handleLogout = () => {
     setRedirect2(true);
   };
+
+  // Fetch proposals from the contract
+  const fetchProposals = async () => {
+    if (contract) {
+      const proposalsData = await contract.eligibleVoters(); // Replace with your method to fetch proposals
+
+      console.log("pro", proposalsData);
+      setProposals(proposalsData);
+    }
+  };
+
+  // Call this when navigating to ProposalsPage
+  useEffect(() => {
+    if (redirect) {
+      fetchProposals();
+    }
+  }, [redirect, contract]);
 
   const handleVote = () => {
     setRedirect3(true);
