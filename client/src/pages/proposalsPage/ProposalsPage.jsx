@@ -52,7 +52,6 @@ const ProposalsPage = ({
       <div className={styles.bottomProposals}>
         <FaRegCopyright className={styles.cIcon} />
         2024
-        <button onClick={handleClick}>cliick me</button>
       </div>
     </div>
   );
